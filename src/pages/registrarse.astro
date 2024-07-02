@@ -1,0 +1,135 @@
+---
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="description" content="Astro description" />
+    <meta name="viewport" content="width=device-width" />
+    <link rel="icon" type="image/svg+xml" href="/faviconPuntoES.svg" />
+    <meta name="generator" content={Astro.generator} />
+    <title>Registrarse con PuntoES</title>
+  </head>
+  <body>
+    <main class="h-screen w-screen flex items-center">
+      
+      <div class="flex-1 flex flex-col gap-10 md:px-32 px-8">
+        <h2 class="text-4xl font-semibold">Hola! Somos PuntoES</h2>
+        <h3 class="text-2xl">
+          Creá tu cuenta para poder tener los mejores uniformes de la ciudad
+        </h3>
+      </div>
+      
+      <div class="flex-1 px-4">
+        <form id="sign-up-form" class="flex flex-col justify-center max-w-md"
+        action="/api/auth/register" method="post">
+          
+          
+          <label for="name">Nombre</label>
+          <input
+            type="text"
+            name="name"
+            placeholder="Introduzca su nombre"
+            required
+            class="border p-2 border-niceGray rounded-md mb-3"
+            maxlength="30"
+          />
+
+          <label for="lastname">Apellido</label>
+          <input
+            type="text"
+            name="lastname"
+            placeholder="Introduzca su apellido"
+            required
+            class="border p-2 border-niceGray rounded-md mb-3"
+            maxlength="30"
+          />
+
+          <label for="email">Email</label>
+          <input
+            type="email"
+            name="email"
+            placeholder="Introduzca su email"
+            required
+            class="border p-2 border-niceGray rounded-md mb-3"
+            maxlength="30"
+          />
+
+          
+          <label for="password">Contraseña</label>
+          <input
+            type="password"
+            name="password"
+            placeholder="Introduzca su contraseña"
+            required
+            class="border p-2 border-niceGray rounded-md mb-3"
+            maxlength="30"
+          />
+
+
+          <div id="error-place-holder" class="hidden mb-3 text-red-500"></div>
+
+
+          <button type="submit" class="py-2 bg-primary rounded-lg text-white"
+            >Registrarse</button
+          >
+        </form>
+
+        <div class="mt-5 px-8">
+          <p class="mt-5">
+            Ya tenés una cuenta? <a
+              href="/iniciar-sesion"
+              class="text-link hover:underline">Inicía sesión aca</a>
+          </p>
+        </div>
+      </div>
+    </main>
+  </body>
+  
+<script>
+const form = document.getElementById("sign-up-form");
+const errorPlaceHolder = document.getElementById("error-place-holder");
+
+form?.addEventListener("submit", async(e) => {
+  e.preventDefault()
+    
+  if (errorPlaceHolder !== null) {
+        errorPlaceHolder.innerHTML = "";
+  }
+  const p = document.createElement("p");
+
+
+  const formData = new FormData(e.target as HTMLFormElement)
+  try {
+    const response = await fetch("/api/auth/register", {
+      method: "POST",
+      body: formData
+    })
+
+    if(response.ok){
+      window.location.href = "/iniciar-sesion"
+    }
+
+    const errorMessage = await response.json();
+    
+    
+
+    p.textContent = errorMessage;
+    
+    errorPlaceHolder?.classList.remove("hidden");
+    errorPlaceHolder?.appendChild(p);
+
+  } catch(error){
+    console.error(error);
+    const p = document.createElement("p");
+    p.textContent = "Se ha producido un error. Por favor, intente mas tarde.";
+    
+    errorPlaceHolder?.appendChild(p);
+  }
+
+}
+)
+
+  </script>
+</html>

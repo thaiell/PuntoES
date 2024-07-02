@@ -1,0 +1,63 @@
+---
+interface Props {
+    heigth?: number | "auto"
+    width?: number | "auto"
+    position?: "absolute" | "fixed" | "center"
+    right?: number | "auto"
+    top?: number | "auto"
+    extraButtonStyles?: string
+}
+
+const { heigth=30, width=30, position="absolute", right="auto", top="auto", extraButtonStyles } = Astro.props
+
+const positionStyles = position == "center" ? `fixed left-1/2 top-1/2` : `${position} right-${right} top-${top}`
+---
+
+
+<menu-component class="relative">
+
+<button id="open-btn" class=`p-1 ${extraButtonStyles}`>
+        <slot id="open-btn" name="open-btn" />
+</button>
+
+<!--     <div id="menu" class={`${position} right-${right} top-${top} hidden shadow-sm shadow-gray-500 bg-white opacity-0 transition-opacity z-50 rounded-lg w-${width} h-${heigth}`}> -->
+        <div id="menu" class={`${positionStyles} hidden shadow-sm shadow-gray-500 bg-white opacity-0 transition-opacity z-50 rounded-lg w-${width} h-${heigth}`}>
+        <slot name="content" />
+
+    </div>
+</menu-component>
+
+
+<script>
+
+class MenuWebComponent extends HTMLElement {
+    connectedCallback(){
+
+        const openButton = this.querySelector("#open-btn")
+        const menu = this.querySelector("#menu");
+
+const closeMenuOutside = (event: MouseEvent) => {
+    if(!menu?.contains(event.target as Node) && !openButton?.contains(event.target as Node)){
+        toggleMenu();
+    }
+}
+
+const toggleMenu = () => {
+    setTimeout(() => { 
+        menu?.classList.toggle("hidden");
+    }, 100);
+    menu?.classList.toggle("opacity-100");
+
+    if(menu?.classList.contains("hidden")){
+        document.addEventListener("click", closeMenuOutside)
+    } else {
+        document.removeEventListener("click", closeMenuOutside)
+    }
+}
+
+openButton?.addEventListener("click", toggleMenu);
+}
+}
+
+customElements.define("menu-component", MenuWebComponent)
+</script>

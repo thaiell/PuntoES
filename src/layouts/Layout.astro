@@ -1,0 +1,32 @@
+---
+interface Props {
+	title: string;
+}
+import Header from "../components/common/Header.astro"
+const { title } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="description" content="Astro description" />
+		<meta name="viewport" content="width=device-width" />
+		<link rel="icon" type="image/svg+xml" href="/faviconPuntoES.svg" />
+		<meta name="generator" content={Astro.generator} />
+		<link rel="preconnect" href="https://fonts.googleapis.com">
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+		<link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@300..700&family=Ubuntu:wght@400;500&display=swap" rel="stylesheet">		<title>{title}</title>
+	</head>
+
+	<body>
+		<main class="flex flex-col h-screen">
+
+			<Header />
+			
+			<slot />
+			
+			
+		</main>
+	</body>
+</html>

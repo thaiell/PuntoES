@@ -1,0 +1,139 @@
+---
+import { Icon } from "astro-icon/components";
+import AccordionButton from "../reutilizables/AccordionButton.astro";
+import { getUserOrUpdateAtom } from "../specific-page/my-school-page/script.ts";
+import SignOutButton from "../specific-page/header-component/SignOutButton.astro";
+import DrawerWebComponent from "../reutilizables/DrawerWebComponent.astro";
+import MenuWebComponent from "../reutilizables/MenuWebComponent.astro";
+
+const user = await getUserOrUpdateAtom(Astro.cookies)
+---
+
+<header
+  class="flex items-center justify-end h-24 relative bg-primary px-4"
+>
+  <a href="/" class="absolute w-20 left-1/2 transform -translate-x-1/2">
+    <img src="../../../images/PuntoESLogo.jpg" alt="PuntoES Uniformes Logo" />
+  </a>
+
+  <!-- User Menu -->
+<MenuWebComponent position="absolute" right={0} >
+
+  <Icon slot="open-btn" name={"user"} size={35} color={"white"} />
+  
+    <div slot="content" class="min-w-60 px-4 py-4">
+      {
+        user ? (
+          <>
+            <div>
+              <h1 class="text-xl">Hola {user?.displayName?.split(/\s+/)[0]}!</h1>
+              <h2 class="text-gray-500">{user?.email}</h2>
+            </div>
+            <span class="block w-full h-[1px] bg-niceGray my-2" />
+            <a href="/mi-perfil" class="flex justify-between text-md">
+              <span>Mi perfil</span>
+            </a>
+            <a href="/mi-perfil-ordenes" class="flex justify-between text-md">
+              <span>Mis pedidos</span>
+            </a>
+            <a href="/miescuela" class="flex justify-between text-md">
+              <span>Mi escuela</span>
+            </a>
+            <span class="block w-full h-[1px] bg-niceGray my-2" />
+            <SignOutButton>Cerrar sesión</SignOutButton>
+          </>
+        ) : (
+          <>
+            <a href="/iniciar-sesion" class="font-Ubuntu">
+              <span>Iniciar Sesión</span>
+            </a>
+            <a href="/registrarse" class="flex justify-between text-md mb-1 font-Ubuntu">
+              <span>Registrarse</span>
+            </a>
+            <span class="block w-full h-[1px] bg-niceGray my-2" />
+            <a href="/nosotros" class="flex justify-between text-md font-Ubuntu">
+              <span>Conocénos</span>
+            </a>
+          </>
+        )
+      }
+    </div>
+</MenuWebComponent>
+
+
+  <DrawerWebComponent>
+    <Icon slot="open-btn" name="menu" size={35} color={"white"} />
+    
+    <Icon slot="close-btn" name="close" size={30} class="ml-auto"/>
+
+    <!-- LINKS  -->
+    <div slot="content" class="flex flex-1 flex-col space-y-2">
+
+      <a href="/" class="flex justify-between text-2xl font-Ubuntu">
+        <span>Inicio</span>
+        <Icon name={"home"} size={30} class={"text-[#3C4043]"} />
+      </a>
+  
+      <a href="/tienda" class="flex justify-between text-2xl font-Ubuntu">
+        <span>Tienda</span>
+        <Icon name={"shopping-bag"} size={30} class={"text-[#3C4043]"} />
+      </a>
+  
+      <a href="/ofertas" class="flex justify-between text-2xl font-Ubuntu">
+        <span>Ofertas</span>
+        <Icon name={"discount"} size={30} class={"text-[#3C4043]"} />
+      </a>
+  
+  <!-- DESPLEGABLE CON CATEGORIAS -->
+  
+  <AccordionButton>
+  
+    <h2 slot="title" class="text-2xl font-Ubuntu">
+      Categorías
+    </h2>
+  
+    <a slot="options" href="/" class="block ml-4 text-xl font-Ubuntu text-link hover:underline">
+      Remeras
+    </a>
+    <a slot="options" href="/" class="block ml-4 text-xl font-Ubuntu text-link hover:underline">
+      Pantalones
+    </a>
+    <a slot="options" href="/" class="block ml-4 text-xl font-Ubuntu text-link hover:underline">
+      Camperas
+    </a>
+    <a slot="options" href="/" class="block ml-4 text-xl font-Ubuntu text-link hover:underline">
+      Buzos
+    </a>
+    <a slot="options" href="/" class="block ml-4 text-xl font-Ubuntu text-link hover:underline">
+      Medias
+    </a>
+  
+  
+  </AccordionButton>
+  
+  
+    </div>
+  
+  <!-- MENU FOOTER -->
+    <div slot="content" class="flex flex-col space-y-1">
+  
+          <a href="/mi-uniforme" class="flex justify-between text-2xl font-Ubuntu">
+              <span>Crear mi uniforme</span>
+              <Icon name={"t-shirt"} size={30} class={"text-[#3C4043]"}/>
+          </a>
+  
+        <a href="/nosotros" class="flex justify-between text-2xl font-Ubuntu">
+            <span>Nosotros</span>
+            <Icon name={"people-group"} size={30} class={"text-[#3C4043]"}/>
+        </a>
+      
+          <a href="/perfil" class="flex justify-between text-2xl font-Ubuntu">
+              <span>Mi Cuenta</span>
+              <Icon name={"user"} size={30} class={"text-[#3C4043]"}/>
+          </a>
+  
+    </div>
+
+  </DrawerWebComponent>
+  
+</header>

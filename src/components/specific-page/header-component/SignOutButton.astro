@@ -1,0 +1,25 @@
+---
+
+const { extraClasses } = Astro.props
+---
+
+<button id="sign-out-btn" type="submit" class:list={extraClasses}>
+    <slot />
+</button>
+
+<script>
+    const signOutBtn = document.getElementById("sign-out-btn")
+    const signOut = async () => {
+        const res = await fetch("/api/auth/signout")
+
+        if(!res.ok){
+            const data = await res.json();
+            return data;
+        }
+        if(res.redirected){
+            window.location.assign(res.url);
+        }
+
+    }
+    signOutBtn?.addEventListener("click", signOut)
+</script>

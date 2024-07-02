@@ -1,0 +1,52 @@
+---
+import { Icon } from "astro-icon/components"
+const { mainWidth=80 } = Astro.props
+
+---
+
+
+
+<drawer-component>
+
+<button id="openButton" class="p-1">
+    <slot name="open-btn" />
+</button>  
+
+<div id="drawer" class={`flex flex-col h-screen w-full sm:w-${mainWidth} fixed z-50 py-8 px-5 top-0 right-0 bg-slate-50 shadow-lg shadow-black duration-100 translate-x-full`}>
+
+    <button id="closeButton">
+        <slot name="close-btn"/>
+    </button>
+    
+    <slot name="content" />
+    
+</div>
+
+<div id="overlay" class="fixed inset-0 w-screen h-screen opacity-20 bg-black hidden z-40">
+</div>
+</drawer-component>
+<script>
+class DrawerComponent extends HTMLElement {
+    connectedCallback() {
+        const closeButton = this.querySelector("#closeButton");
+        const openButton = this.querySelector("#openButton")
+        const drawer = this.querySelector("#drawer");
+        const overlay = this.querySelector("#overlay")
+
+        const toggleMenu = () => {
+            drawer?.classList.toggle("translate-x-full");
+            overlay?.classList.toggle("hidden");
+        }
+        openButton?.addEventListener("click", toggleMenu)
+        closeButton?.addEventListener("click", toggleMenu)
+        
+
+        overlay?.addEventListener("click", () => {
+            drawer?.classList.add("translate-x-full");
+            overlay?.classList.toggle("hidden");
+        })
+    }
+}
+
+customElements.define("drawer-component", DrawerComponent)
+</script>
