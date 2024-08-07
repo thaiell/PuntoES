@@ -1,11 +1,18 @@
 import { initializeApp } from "@firebase/app";
+import { getAuth } from "@firebase/auth";
+
 
 const firebaseConfig = {
-    apiKey: "AIzaSyDNijwSjFYjLgLsHREEN12b6oyTEr-IVpg",
-    authDomain: "puntoes-6c96b.firebaseapp.com",
-    projectId: "puntoes-6c96b",
-    storageBucket: "puntoes-6c96b.appspot.com",
-    messagingSenderId: "351588471953",
-    appId: "1:351588471953:web:e009f2aeec26dc7d2cdb30"
+    apiKey: import.meta.env.PUBLIC_FIREBASE_APIKEY,
+    authDomain: import.meta.env.PUBLIC_FIREBASE_AUTHDOMAIN,
+    projectId: import.meta.env.PUBLIC_FIREBASE_PROJECT_ID,
+    storageBucket: import.meta.env.PUBLIC_FIREBASE_STORAGEBUCKET,
+    messagingSenderId: import.meta.env.PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
+    appId: import.meta.env.PUBLIC_FIREBASE_APP_ID
 };
-export const app = initializeApp(firebaseConfig);
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app)
+
+
+export { auth };

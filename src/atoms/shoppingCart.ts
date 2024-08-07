@@ -1,4 +1,4 @@
-import type { Products } from "../lib/types"
+/* import type { Products } from "../lib/types"
 const cartKey = "cart"
 
 export const addProductToCart = (newProduct: Products) => {
@@ -30,7 +30,7 @@ export const deleteProductInCart = (productId: string) => {
         console.log("Este producto no se encuentra en el carrito");
     }
 }
-
+ */
 /* export const readProductsInCart = () => {
     
     const products = localStorage.getItem(cartKey)

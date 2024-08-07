@@ -1,0 +1,16 @@
+Usuario Mercado Pago Test - Comprador 1: 
+TEST_USER_1526444907
+p8m75Dkxpy
+
+http://localhost:4321/api/services/mercadopago/callbacks/onsuccess
+?collection_id=84017725327
+&collection_status=approved
+&payment_id=84017725327
+&status=approved
+&external_reference=null
+&payment_type=account_money
+&merchant_order_id=21382122916
+&preference_id=1343355235-8f83c85a-904c-4ed3-ba12-4597174d6b22
+&site_id=MLA
+&processing_mode=aggregator
+&merchant_account_id=null

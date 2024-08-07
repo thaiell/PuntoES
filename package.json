@@ -1,5 +1,5 @@
 {
-  "name": "",
+  "name": "puntoes",
   "type": "module",
   "version": "0.0.1",
   "scripts": {
@@ -10,20 +10,23 @@
     "astro": "astro"
   },
   "dependencies": {
-    "@astrojs/check": "^0.7.0",
-    "@astrojs/db": "^0.11.7",
+    "@astrojs/check": "^0.8.3",
+    "@astrojs/db": "^0.12.0",
     "@astrojs/react": "^3.6.0",
     "@astrojs/tailwind": "^5.1.0",
     "@astrojs/vercel": "^7.7.2",
     "@firebase/app": "^0.10.5",
     "@firebase/auth": "^1.7.4",
+    "@mercadopago/sdk-react": "^0.0.19",
     "@nanostores/persistent": "^0.10.1",
     "@nanostores/react": "^0.7.2",
     "@types/react": "^18.3.3",
     "@types/react-dom": "^18.3.0",
-    "astro": "^4.11.3",
+    "astro": "^4.12.2",
     "astro-icon": "^1.1.0",
     "firebase-admin": "^12.2.0",
+    "mercadopago": "^2.0.10",
+    "nanoid": "^5.0.7",
     "nanostores": "^0.10.3",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",

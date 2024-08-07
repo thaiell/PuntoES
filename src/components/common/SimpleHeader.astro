@@ -1,0 +1,20 @@
+---
+import { Icon } from "astro-icon/components";
+import AccordionButton from "../reutilizables/AccordionButton.astro";
+import SignOutButton from "../specific-page/header-component/SignOutButton.astro";
+import DrawerWebComponent from "../reutilizables/DrawerWebComponent.astro";
+import MenuWebComponent from "../reutilizables/MenuWebComponent.astro";
+
+/* const user = await getUserOrUpdateAtom(Astro.cookies) */
+---
+
+<header
+  class="flex items-center justify-end h-24 relative bg-primary px-4"
+>
+  <a href="/" class="absolute w-20 left-1/2 transform -translate-x-1/2">
+    <img src="../../../images/PuntoESLogo.jpg" alt="PuntoES Uniformes Logo" />
+  </a>
+
+    <slot name="content" />
+  
+</header>

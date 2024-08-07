@@ -83,13 +83,13 @@ if (Astro.cookies.has("session")) {
       signInWithEmailAndPassword,
       type AuthError,
     } from "@firebase/auth";
-    import { app } from "../services/firebase/client";
+    import { auth } from "../services/firebase/client";
     import { removeExtraSpaces } from "../lib/utils";
 
+    
     const errorPlaceHolder = document.getElementById("error-place-holder");
     const form = document.getElementById("sign-in-form") as HTMLFormElement;
 
-    const auth = getAuth(app);
     auth.setPersistence(inMemoryPersistence);
 
     form.addEventListener("submit", async (e) => {

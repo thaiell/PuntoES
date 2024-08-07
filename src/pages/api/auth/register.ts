@@ -43,9 +43,8 @@ if(!name || !lastname || !password || !email) {
         name: name,
         lastname: lastname,
         phone: `+549${phone}`,
-        dni: Number(dni),
-        schoolID: null,
-        role: "user"
+        dni: dni,
+        schoolID: null
       })
 
     } catch(errorDb) {
@@ -63,6 +62,8 @@ if(!name || !lastname || !password || !email) {
 
       const errorCode = (error as AuthError).code.toString();
 
+      console.log(errorCode)
+
       switch (errorCode) {
         case "auth/invalid-email":
           return new Response (JSON.stringify("La dirección de correo electrónico no es válida."), {
@@ -75,7 +76,9 @@ if(!name || !lastname || !password || !email) {
         {
           status: 401
         })
-
+        case "auth/invalid-phone-number": 
+        return new Response(JSON.stringify("El número de teléfono es incorrecto"));
+        
         case "auth/too-many-requests":
           return new Response(JSON.stringify("Demasiados intentos, intente más tarde."),
         {

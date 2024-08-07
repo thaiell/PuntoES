@@ -1,0 +1,52 @@
+---
+import Layout from "../../../layouts/Layout.astro"
+import SchoolInfoAside from "../../../components/specific-page/my-school-page/aside/schoolInfoAside.astro";
+import SchoolForm from "../../../components/specific-page/my-school-page/formulario/SchoolForm";
+import ToastContainer from "../../../components/common/toast/ToastContainer";
+import { activateSchoolUser } from "../../../components/specific-page/my-school-page/main";
+import type { RequiredSchoolPage } from "../../../types/global";
+import type { UserForm } from "../../../types/school";
+import { fetchForm } from "../../../components/specific-page/my-school-page/script-modules";
+
+const { uid } = Astro.locals.user;
+
+const params = Astro.url.searchParams;
+const schoolIdParam = Number(params.get("escuela"));
+
+const resMain = await activateSchoolUser(uid, schoolIdParam, Astro.cookies);
+
+if (resMain?.status !== 200) {
+  console.log(resMain?.status);
+}
+const data = (await resMain?.json()) as RequiredSchoolPage;
+const resForm = await fetchForm(uid, data.schoolId);
+const dataForm = (await resForm?.json()) as UserForm | null;
+---
+
+<Layout title="Mi Escuela">
+  <ToastContainer client:visible />
+
+  <div class="relative font-Ubuntu min-h-[calc(100vh-6rem)]">
+    
+    <SchoolForm client:load 
+    form={dataForm}
+    prices={data.school.price}
+    schoolId={data.schoolId}
+    />
+
+
+      <SchoolInfoAside
+        slot={"content"}
+        schoolId={data.schoolId}
+        schoolImg={{
+          url: data.school.image.imgUrl,
+          alt: data.school.image.imgAlt,
+        }}
+        stepsInfo={{
+          formStepIsCompleted: data.user.steps.form,
+          deliverStepIsCompleted: data.user.steps.delivered,
+          paymentStepIsCompleted: data.user.steps.payment,
+        }}
+      />
+  </div>
+</Layout>

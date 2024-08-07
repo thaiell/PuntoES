@@ -1,0 +1,183 @@
+---
+import { Image } from "astro:assets";
+import AccesToMySchools from "./AccesToMySchools";
+import { allIds, pageUrls } from "../../../../constants/constants";
+import { Icon } from "astro-icon/components";
+import { schoolAsideId, schoolCloseButtonAsideId } from "./utils";
+import { db, Invitations, eq } from "astro:db";
+
+interface Props {
+  schoolId: number
+  schoolImg: {
+    url: string;
+    alt: string;
+  };
+  stepsInfo: {
+    formStepIsCompleted: boolean;
+    paymentStepIsCompleted: boolean;
+    deliverStepIsCompleted: boolean;
+  };
+}
+
+const schoolCookiesString = Astro.cookies.get(allIds)?.value || "[]";
+
+const schoolCookies: { id: number; name: string }[] =
+  JSON.parse(schoolCookiesString);
+
+const { schoolId, schoolImg, stepsInfo } = Astro.props;
+
+const invitation = await db.select({ code: Invitations.code }).from(Invitations).where(eq(Invitations.schoolId, schoolId))
+const invitationCode = invitation[0].code;
+
+const steps = {
+  "1": {
+    completed: stepsInfo.formStepIsCompleted,
+    title: "Completar formulario",
+    // abreviature: "form"
+    url: pageUrls.my_school.form_page,
+  },
+  "2": {
+    completed: stepsInfo.paymentStepIsCompleted,
+    title: "Pago y Notificación",
+    // abreviature: "payment"
+    url: pageUrls.my_school.payment_page,
+  },
+  "3": {
+    completed: stepsInfo.deliverStepIsCompleted,
+    title: "Entrega",
+    // abreviature: "deliver"
+    url: pageUrls.my_school.deliver_page,
+  },
+};
+---
+
+<div
+  id={schoolAsideId}
+  class="fixed h-full top-0 right-0 w-full px-24 py-20 lg:py-8 lg:px-5 md:w-3/4 lg:w-80 lg:block bg-slate-50 translate-x-full lg:translate-x-0 duration-150 lg:absolute shadow-lg shadow-black"
+>
+  <button
+    type="button"
+    id={schoolCloseButtonAsideId}
+    class="lg:hidden absolute top-8 right-8"
+  >
+    <Icon name={"close"} size={30} color={"gray"} />
+  </button>
+
+  <div class="flex flex-col h-full items-center">
+    <div class="flex flex-col px-2 py-4 justify-between">
+      <div class="flex justify-center">
+        <Image
+          src={schoolImg.url}
+          alt={schoolImg.alt}
+          decoding={"async"}
+          width={300}
+          height={300}
+        />
+      </div>
+
+      <div id="more-schools-menu" class="w-full h-auto hidden">
+        <AccesToMySchools client:load schoolCookies={schoolCookies} />
+      </div>
+      <button
+        id="my-school-aside-button"
+        class="flex justify-center duration-200 transition-transform"
+      >
+        <Icon
+          id="aside-chevron-down"
+          name={"chevron-down"}
+          size={30}
+          color={"gray"}
+        />
+      </button>
+    </div>
+
+    <nav class="w-72 mt-10">
+      <ul class="flex flex-col px-2 space-y-4">
+        {
+          Object.values(steps).map((item, index) => (
+            <li>
+              {/*  data-render={item.abreviature} */}
+              <div class="flex justify-between items-center font-Comfortaa">
+                <a href={item.url} class="hover:underline">
+                  {item.title}
+                </a>
+                <button
+                  class:list={[
+                    "w-12 h-12 flex items-center justify-center text-white font-bold text-sm rounded-full",
+                    {
+                      "bg-green-500": item.completed,
+                      "bg-red-500": !item.completed,
+                    },
+                  ]}
+                >
+                  {index + 1}
+                </button>
+              </div>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+
+    <div class="mt-auto">
+      <a
+        href="#"
+        data-id={invitationCode}
+        id="invitation-link"
+        class="font-Comfortaa hover:underline">Invitar gente a mi escuela</a
+      >
+    </div>
+  </div>
+</div>
+
+<script>
+  import {
+    handleSchoolAsideView,
+    schoolAsideId,
+    schooButtonAsideId,
+    schoolCloseButtonAsideId,
+  } from "./utils";
+  import { pageUrls } from "../../../../constants/constants";
+
+  const moreSchoolMenu = document.getElementById("more-schools-menu");
+  const moreSchoolButton = document.getElementById("my-school-aside-button");
+
+  const invitationLink = document.getElementById("invitation-link");
+
+  if (invitationLink) {
+    const id = invitationLink.getAttribute("data-id");
+
+    invitationLink.addEventListener("click", () => {
+      navigator.clipboard.writeText(
+        `${pageUrls.default}${pageUrls.invitation}/${id}`
+      );
+    });
+  }
+
+  const schoolAside = document.getElementById(schoolAsideId);
+  const schoolButtonAside = document.getElementById(schooButtonAsideId);
+  const schoolCloseAside = document.getElementById(schoolCloseButtonAsideId);
+
+  schoolButtonAside?.addEventListener("click", () =>
+    handleSchoolAsideView(schoolAside)
+  );
+  schoolCloseAside?.addEventListener("click", () =>
+    handleSchoolAsideView(schoolAside)
+  );
+
+  if (moreSchoolMenu && moreSchoolButton) {
+    moreSchoolButton.addEventListener("click", () => {
+      if (moreSchoolMenu.classList.contains("hidden")) {
+        let rotation = moreSchoolButton.dataset.rotation || 0;
+        rotation = (parseInt(rotation.toString()) + 180) % 360;
+        moreSchoolButton.style.transform = `rotate(${rotation}deg)`;
+        moreSchoolButton.dataset.rotation = rotation.toString();
+        moreSchoolMenu.classList.toggle("hidden");
+      } else {
+        moreSchoolMenu.classList.add("hidden");
+        moreSchoolButton.style.transform = "rotate(0deg)";
+        moreSchoolButton.dataset.rotation = "0";
+      }
+    });
+  }
+</script>

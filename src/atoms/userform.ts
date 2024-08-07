@@ -1,15 +1,9 @@
-import { atom } from 'nanostores';
-import type { UserForm } from '../lib/types';
+/* import { atom } from 'nanostores';
+import type { UserForm } from '../types/global';
 
 
-export const schoolStore = atom<UserForm | null>(null);
+export const $userForm = atom<UserForm | null>(null);
 
-/*   console.log(schoolStore) */
-export const setSchoolStore = (form: UserForm | null) => { 
-/*   console.log(form) */
-  schoolStore.set(form);
-}
-
-/* schoolStore.listen((value) => {
-  console.log('schoolStore updated:', value);
-}); */
+export const setUserForm = (form: UserForm | null) => { 
+  $userForm.set(form);
+} */

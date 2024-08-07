@@ -1,0 +1,57 @@
+---
+import Layout from "../../../layouts/Layout.astro";
+import SchoolInfoAside from "../../../components/specific-page/my-school-page/aside/schoolInfoAside.astro";
+import Checkout from "../../../components/specific-page/my-school-page/payment/Checkout.tsx";
+import ToastContainer from "../../../components/common/toast/ToastContainer";
+import type { RequiredSchoolPage } from "../../../types/global.ts";
+import type { UserForm } from "../../../types/school.ts";
+import { pageUrls } from "../../../constants/constants";
+import { activateSchoolUser } from "../../../components/specific-page/my-school-page/main.ts"
+import { fetchForm } from "../../../components/specific-page/my-school-page/script-modules";
+
+const { uid } = Astro.locals.user;
+
+const params = Astro.url.searchParams;
+const schoolIdParam = Number(params.get("escuela"));
+
+const resMain = await activateSchoolUser(uid, schoolIdParam, Astro.cookies);
+
+if (resMain?.status !== 200) {
+  console.log(resMain?.status);
+  const resMainJson = await resMain.json();
+
+  // Falta manejar error condicional con la { redirect: "X" }
+
+  return resMainJson.redirect ? Astro.redirect(resMainJson.redirect) : Astro.redirect("/404");
+}
+const data = (await resMain?.json()) as RequiredSchoolPage;
+
+const resForm = await fetchForm(uid, data.schoolId);
+const dataForm = (await resForm?.json()) as UserForm | null;
+---
+
+<Layout title="Mi Escuela">
+  <ToastContainer client:visible />
+  <div class="relative font-Ubuntu min-h-[calc(100vh-6rem)]">
+    <section class="flex flex-1 justify-center items-center transition-all duration-500">
+      {!dataForm ? (
+        <div class="bg-slate-50 border-2 border-niceGray w-80 mt-10 h-56 px-4 flex flex-col text-center justify-center items-center rounded-2xl gap-3">
+          <h3 class="text-xl">Parece que no has subido tu formulario todavia...</h3>
+          <a href={`${pageUrls.my_school.form_page}`} class="text-white font-medium hover:underline px-4 py-3 rounded-xl bg-teal-400 text-lg">Ir a crear mi formulario</a>
+        </div>
+      ) : (
+        <Checkout user={data.user} form={dataForm} prices={data.school.price} client:load />
+      )}
+    </section>
+    <SchoolInfoAside
+      slot={"content"}
+      schoolId={data.schoolId}
+      schoolImg={{ url: data.school.image.imgUrl, alt: data.school.image.imgAlt }}
+      stepsInfo={{
+        formStepIsCompleted: data.user.steps.form,
+        deliverStepIsCompleted: data.user.steps.delivered,
+        paymentStepIsCompleted: data.user.steps.payment 
+      }}
+    />
+  </div>
+</Layout>

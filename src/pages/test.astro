@@ -1,0 +1,73 @@
+---
+import Layout from "../layouts/Layout.astro";
+import MPSchoolButton from "../components/specific-page/payment/MPSchoolButton";
+import type { Items } from "mercadopago/dist/clients/commonTypes";
+import type { Payer } from "mercadopago/dist/clients/preference/commonTypes";
+import { apiRoutes } from "../constants/constants";
+
+const items: Items[] = [{
+        id: "Remera Egresados",
+        title: "Remera Egresados Uniforme",
+        currency_id: "ARS",
+        quantity: 1,
+        unit_price: 100
+      },
+      {
+        id: "Campera Egresados",
+        title: "Campera Egresados Uniforme",
+        category_id: "ARS",
+        quantity: 2,
+        unit_price: 50
+      }
+    ]
+const payer: Payer = {
+    email: "thaithailog@gmail.com",
+    name: "marianito",
+    surname: "juancarlitos",
+    address: {
+        street_name: "Cesar Diaz",
+        street_number: "432",
+        zip_code: "147"
+    },
+    phone: {
+        area_code: "+54",
+        number: "21560306"
+    }
+}
+    const handleFetching = async () => {
+        try {
+            const response = await fetch(apiRoutes.mercado_pago.uniformsPayment, {
+                method: "POST",
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    items: items,
+                    payer: payer,
+                    paymentDataAddress: {
+                        number: "432",
+                        place: "caba",
+                        street: "Cesar Diaz",
+                        zipcode: "147",
+                    },
+                      formId: 92834,
+                      totalAmount: 200
+                    })
+                  })
+            
+            console.log(response)
+        } catch(error){
+            console.log(error)
+        }
+    }
+    await handleFetching();
+---
+<Layout title="TESTING">
+
+    <h1>
+        Testing Mercado Pago
+    </h1>
+<!-- 
+    <MPSchoolButton paramPreferenceId={preferenceId}  client:only="react" /> -->
+
+</Layout>

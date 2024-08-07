@@ -20,7 +20,6 @@ const positionStyles = position == "center" ? `fixed left-1/2 top-1/2` : `${posi
         <slot id="open-btn" name="open-btn" />
 </button>
 
-<!--     <div id="menu" class={`${position} right-${right} top-${top} hidden shadow-sm shadow-gray-500 bg-white opacity-0 transition-opacity z-50 rounded-lg w-${width} h-${heigth}`}> -->
         <div id="menu" class={`${positionStyles} hidden shadow-sm shadow-gray-500 bg-white opacity-0 transition-opacity z-50 rounded-lg w-${width} h-${heigth}`}>
         <slot name="content" />
 

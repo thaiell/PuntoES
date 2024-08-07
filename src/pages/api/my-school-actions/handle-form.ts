@@ -1,5 +1,4 @@
 import type { APIRoute } from "astro";
-import { getUserOrUpdateAtom } from "../../../components/specific-page/my-school-page/script.ts";
 import { and, db, eq, Forms } from "astro:db";
 import { createRandomNumberId } from "../../../lib/utils";
 
@@ -9,11 +8,13 @@ interface APIResponse {
 
 export const POST: APIRoute = async ({
   request,
-  cookies
+  locals
 }): Promise<Response> => {
   try {
-    const user = await getUserOrUpdateAtom(cookies);
-    if (!user) {
+    
+    const userUid = locals.user.uid;
+    
+    if (!userUid) {
       const response: APIResponse = {
         message: "Debe iniciar sesión primero",
       };
@@ -23,11 +24,12 @@ export const POST: APIRoute = async ({
       });
     }
 
+
+
     const data = await request.json();
-    console.log(data)
-    
+
     const {
-      schoolId,
+      id,
       shirtName,
       tshirtSize,
       tshirtQuantity,
@@ -55,8 +57,8 @@ export const POST: APIRoute = async ({
       .from(Forms)
       .where(
         and(
-          eq(Forms.schoolId, schoolId),
-          eq(Forms.userUid, user.uid)
+          eq(Forms.id, id),
+          eq(Forms.userUid, userUid)
         )); // Searchs for a Form that belongs to the user and to the right school
 
     if (oldForm.length > 0) { // If exists, updates the form
@@ -79,7 +81,7 @@ export const POST: APIRoute = async ({
           message: "No hay necesidad de actualizar los datos",
         };
         return new Response(JSON.stringify(response), {
-          status: 204,
+          status: 200,
           statusText: "Not new content",
         });
       }
@@ -95,8 +97,8 @@ export const POST: APIRoute = async ({
         })
         .where(
           and(
-            eq(Forms.schoolId, schoolId),
-            eq(Forms.userUid, user.uid)
+            eq(Forms.schoolId, id),
+            eq(Forms.userUid, userUid)
           )); // Updates Form
 
       const response: APIResponse = {
@@ -109,8 +111,8 @@ export const POST: APIRoute = async ({
     } else { // If no form is found, this creates one
       const formSchema = {
         id: createRandomNumberId(),
-        userUid: user.uid,
-        schoolId: schoolId,
+        userUid: userUid,
+        schoolId: id,
         fieldName: shirtName,
         fieldShirtSize: tshirtSize,
         fieldShirtQuantity: tshirtQuantity,
@@ -129,6 +131,7 @@ export const POST: APIRoute = async ({
       });
     }
   } catch (error) {
+    console.log("Error handling with form submit", error)
     const response: APIResponse = {
       message: "Algo ha ocurrido",
     };

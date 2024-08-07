@@ -1,0 +1,47 @@
+---
+import BasicLayout from "../../layouts/BasicLayout.astro";
+import { db, Invitations, eq } from "astro:db";
+import { pageUrls } from "../../constants/constants";
+import ConfirmInvitationButton from "../../components/specific-page/invitation-page/ConfirmInvitationButton"
+import ToastContainer from "../../components/common/toast/ToastContainer";
+const inviteCode = Astro.params.inviteID as string;
+console.log(inviteCode)
+
+const schoolInvite = await db.select().from(Invitations).where(eq(Invitations.code, inviteCode));
+console.log(schoolInvite)
+
+
+---
+
+<BasicLayout title="Invitación">
+<ToastContainer client:visible />
+    <section class="h-screen flex justify-center items-center">
+
+        <div class="flex flex-col items-center space-y-8 justify-between min-w-48 min-h-52 px-4 py-2 rounded-xl bg-slate-50 border border-gray-300">
+{ schoolInvite ? (<h1 class="font-Ubuntu text-xl">
+                Has sido invitado a un colegio!
+            </h1>
+
+            <a href="/" target="_blank" class="w-36">
+                <img src="../../../images/PuntoESLogo.jpg" alt="PuntoES Uniformes Logo" />
+            </a>
+
+        <ConfirmInvitationButton code={inviteCode} client:load/>
+            )
+            : 
+            (
+            <h1 class="font-Ubuntu text-xl">
+                La invitación está caducada o no existe una invitacion válida
+            </h1>
+            <p>Intenta pedir el código de invitacion nuevamente :)</p>
+
+            <a href={`${pageUrls.default}${pageUrls.my_school}`}>Ir a mis escuelas</a>
+            )
+            }
+        </div>
+
+    </section>
+
+</BasicLayout>
+
+

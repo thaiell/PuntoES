@@ -1,6 +1,13 @@
 ---
 import { Icon } from "astro-icon/components"
-const { mainWidth=80 } = Astro.props
+
+interface Props {
+    mainWidth?: number
+    extraOpenButtonStyles?: string
+    extraCloseButtonStyles?: string
+}
+
+const { mainWidth=80, extraOpenButtonStyles, extraCloseButtonStyles } = Astro.props
 
 ---
 
@@ -8,15 +15,18 @@ const { mainWidth=80 } = Astro.props
 
 <drawer-component>
 
-<button id="openButton" class="p-1">
+<button id="openButton" class={`p-1 ${extraOpenButtonStyles}`}>
     <slot name="open-btn" />
-</button>  
+</button>
 
 <div id="drawer" class={`flex flex-col h-screen w-full sm:w-${mainWidth} fixed z-50 py-8 px-5 top-0 right-0 bg-slate-50 shadow-lg shadow-black duration-100 translate-x-full`}>
-
-    <button id="closeButton">
+    { 
+    <slot name="close-btn"/> && (
+    <button id="closeButton" class={extraCloseButtonStyles}>
         <slot name="close-btn"/>
-    </button>
+        </button>
+        )
+    }
     
     <slot name="content" />
     

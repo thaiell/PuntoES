@@ -1,11 +1,10 @@
 import { type APIRoute } from "astro";
-import { app } from "../../../services/firebase/server";
-import { getAuth } from "firebase-admin/auth";
+import { auth } from "../../../services/firebase/server";
 import { cookieRedirectPathValue } from "../../../constants/constants"; /* Verificar si lo termino dejando o no */
+// import { getAuth } from "firebase-admin/auth";
 
 export const GET: APIRoute = async ({request, cookies, redirect  }) => {
-    const auth = getAuth(app)
-  
+    // const auth = getAuth(app)
     const idToken = request.headers.get("Authorization")?.split("Bearer ")[1];
     
     if(!idToken){
@@ -33,7 +32,10 @@ export const GET: APIRoute = async ({request, cookies, redirect  }) => {
         );
       });
 
+
+
     } catch (error: any) {
+      console.log("sign in error: ", error)
         return new Response(
           JSON.stringify({
             error: "El servidor canceló la solicitud",
